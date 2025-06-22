@@ -9,8 +9,8 @@ class RateCalculatorPlugin(Star):
         super().__init__(context)
         logger.info("倍率计算插件已加载")
 
-    @filter.message()
-    async def handle_rate_calculation(self, event: AstrMessageEvent):
+  @on_message
+    async def handle_message(self, ctx: MessageEvent):
         # 获取用户消息内容
         message = event.message_str.strip()
         

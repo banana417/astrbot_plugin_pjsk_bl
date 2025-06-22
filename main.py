@@ -1,38 +1,51 @@
 from astrbot.api.event import filter, AstrMessageEvent
 from astrbot.api.star import Context, Star, register
 from astrbot.api import logger
+import re
 
 @register(
-    name="pjsk_bl",
-    author="bunana",
-    description="倍率计算插件，用于计算模拟卡组的倍率和技能实际值",
+    name="astrbot_plugin_pjsk_bl",
+    author="bunana417",
+    description="倍率计算插件，根据输入的五组数据计算结果",
     version="1.0.0",
-    repository="https://github.com/yourusername/astrbot_plugin_pjsk_bl"
+    repo_url="https://github.com/banana417/astrbot_plugin_pjsk_bl"
 )
 class RateCalculatorPlugin(Star):
     def __init__(self, context: Context):
         super().__init__(context)
         logger.info("倍率计算插件已加载")
 
-   # 1. 在装饰器中添加 `args_tip`，当用户输入错误时，AstroBot会用它来提示用户
-@filter.command("倍率", args_tip="倍率 <卡1总合力> <卡2总合力> <卡3总合力> <卡4总合力> <卡5总合力>")
-# 2. 直接在函数签名中定义参数和类型，AstroBot会自动解析和注入
-async def calculate_rate(self, event: AstrMessageEvent, num1: float, num2: float, num3: float, num4: float, num5: float):
-    '''处理倍率计算指令'''
-    try:
-        # 3. 删除了所有手动解析的代码，直接使用注入的参数进行计算
-        result1 = num1 + (num2 + num3 + num4 + num5) * 0.2
-        result2 = result1 * 0.01 + 1
+    @filter.message()
+    async def handle_rate_calculation(self, event: AstrMessageEvent):
+        # 获取用户消息内容
+        message = event.message_str.strip()
+        
+        # 匹配"倍率+五组数据"格式 (例如: "倍率 100 20 30 40 50")
+        pattern = r'^倍率\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)$'
+        match = re.match(pattern, message)
+        
+        if not match:
+            return  # 不匹配则不处理
+        
+        try:
+            # 提取五个数字
+            num1 = float(match.group(1))
+            num2 = float(match.group(2))
+            num3 = float(match.group(3))
+            num4 = float(match.group(4))
+            num5 = float(match.group(5))
+            
+            # 执行计算
+            result1 = num1 + (num2 + num3 + num4 + num5) * 0.2
+            result2 = result1 * 0.01 + 1  # 1%即0.01
+            
+            # 格式化输出结果
+            response = f"您的模拟卡组为：{result2:.2f}倍率；技能实际值为{result1:.2f}%"
+            yield event.plain_result(response)
+            
+        except Exception as e:
+            logger.error(f"计算出错: {str(e)}")
+            yield event.plain_result("计算失败，请检查输入格式是否正确")
 
-        # 格式化输出结果
-        response = f"您的模拟卡组：\n倍率: {result2:.2f}\n技能实际值: {result1:.2f}"
-        yield event.plain_result(response)
-
-    # 4. 异常处理逻辑可以简化。因为AstroBot已保证参数是5个浮点数，
-    #    这里的异常捕获主要用于防御计算过程本身可能出现的未知错误。
-    except Exception as e:
-        logger.error(f"计算出错: {str(e)}")
-        yield event.plain_result("计算过程中发生未知错误，请联系管理员")
-
-async def terminate(self):
-    logger.info("倍率计算插件已卸载")
+    async def terminate(self):
+        logger.info("倍率计算插件已卸载")

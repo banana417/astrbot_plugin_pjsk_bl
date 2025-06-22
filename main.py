@@ -3,11 +3,7 @@ from astrbot.api.star import Context, Star, register
 from astrbot.api import logger
 import re
 
-@register(
-    name="astrbot_plugin_pjsk_bl",
-    author="bunana417",
-    version="1.0.0",
-    repo_url="https://github.com/banana417/astrbot_plugin_pjsk_bl"
+@register("astrbot_plugin_pjsk_bl","bunana417","1.0.0",
 )
 class RateCalculatorPlugin(Star):
     def __init__(self, context: Context):

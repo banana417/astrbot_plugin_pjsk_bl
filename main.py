@@ -6,7 +6,6 @@ import re
 @register(
     name="astrbot_plugin_pjsk_bl",
     author="bunana417",
-    description="倍率计算插件，根据输入的五组数据计算结果",
     version="1.0.0",
     repo_url="https://github.com/banana417/astrbot_plugin_pjsk_bl"
 )

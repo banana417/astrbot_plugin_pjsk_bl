@@ -3,8 +3,7 @@ from astrbot.api.star import Context, Star, register
 from astrbot.api import logger
 import re
 
-@register("astrbot_plugin_pjsk_bl","bunana417","1.0.0",
-)
+@register("astrbot_plugin_pjsk_bl","bunana417","倍率计算插件，根据输入的五组数据计算结果","1.0.0",)
 class RateCalculatorPlugin(Star):
     def __init__(self, context: Context):
         super().__init__(context)

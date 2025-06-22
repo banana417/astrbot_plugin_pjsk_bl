@@ -3,7 +3,7 @@ from astrbot.api.star import Star, Context
 from astrbot.api.event import AstrMessageEvent
 from typing import List
 
-@register("astrbot_plugin_pjsk_bl", "bunana417", "卡组倍率计算插件", "1.0.0")
+@register("astrbot_plugin_pjsk_bl", "bunana417", "1.0.0")
 class CardSimulatorPlugin(Star):
     def __init__(self, context: Context):
         super().__init__(context)
